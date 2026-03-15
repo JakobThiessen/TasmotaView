@@ -1,4 +1,4 @@
-import { AppSettings, MqttConfig, MqttConfigResult, TasmotaDevice } from '../types';
+import { AppSettings, MqttConfig, MqttConfigResult, TasmotaDevice } from './types';
 
 const BASE = '/api';
 

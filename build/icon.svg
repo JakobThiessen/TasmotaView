@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="40" fill="url(#bg)"/>
+  <!-- Magnifying glass -->
+  <circle cx="112" cy="108" r="48" fill="none" stroke="white" stroke-width="12"/>
+  <line x1="146" y1="142" x2="192" y2="188" stroke="white" stroke-width="14" stroke-linecap="round"/>
+  <!-- WiFi waves inside magnifying glass -->
+  <path d="M 88 118 Q 112 90 136 118" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <path d="M 98 108 Q 112 94 126 108" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="112" cy="120" r="5" fill="white"/>
+</svg>

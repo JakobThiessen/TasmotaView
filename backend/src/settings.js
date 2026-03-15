@@ -1,9 +1,20 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SETTINGS_PATH = join(__dirname, '..', 'data', 'settings.json');
+
+// Use TASMOTAVIEW_DATA_DIR (set by Electron) if available, else default to backend/data/
+function getSettingsPath() {
+  if (process.env.TASMOTAVIEW_DATA_DIR) {
+    const dir = process.env.TASMOTAVIEW_DATA_DIR;
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    return join(dir, 'settings.json');
+  }
+  return join(__dirname, '..', 'data', 'settings.json');
+}
+
+const SETTINGS_PATH = getSettingsPath();
 
 const DEFAULTS = {
   scan: { subnet: '192.168.178', rangeStart: 1, rangeEnd: 254, timeout: 1500, batchSize: 30 },

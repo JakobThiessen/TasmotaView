@@ -1,8 +1,8 @@
 # TasmotaView
 
-> Web-basierter Tasmota Device Manager – findet alle Tasmota-Geräte im lokalen Netzwerk und ermöglicht die zentrale MQTT-Konfiguration.
+> Tasmota Device Manager – findet alle Tasmota-Geräte im lokalen Netzwerk und ermöglicht die zentrale MQTT-Konfiguration. Verfügbar als Web-App und als **Windows Desktop-App** (Electron).
 
-![Architektur](https://img.shields.io/badge/Frontend-React_+_Vite-blue) ![Backend](https://img.shields.io/badge/Backend-Node.js_+_Express-green) ![CSS](https://img.shields.io/badge/CSS-Tailwind_CSS-purple)
+![Architektur](https://img.shields.io/badge/Frontend-React_+_Vite-blue) ![Backend](https://img.shields.io/badge/Backend-Node.js_+_Express-green) ![CSS](https://img.shields.io/badge/CSS-Tailwind_CSS-purple) ![Desktop](https://img.shields.io/badge/Desktop-Electron-9FEAF9)
 
 ---
 
@@ -13,6 +13,7 @@
 - [Voraussetzungen](#voraussetzungen)
 - [Installation](#installation)
 - [Starten](#starten)
+- [Desktop-App (Electron)](#desktop-app-electron)
 - [Projektstruktur](#projektstruktur)
 - [Architektur](#architektur)
 - [Seiten & Funktionen](#seiten--funktionen)
@@ -30,7 +31,7 @@
 
 TasmotaView ist eine moderne Web-App (React + Node.js), die – angelehnt an das Java-Tool [TasmoView von Andreas Kielkopf](https://github.com/andreaskielkopf/TasmoView) – alle Tasmota-Geräte im lokalen Netzwerk per HTTP-Scan findet und deren Status tabellarisch darstellt. Zusätzlich können MQTT-Broker-Einstellungen (z.B. Mosquitto) zentral auf alle oder ausgewählte Geräte übertragen werden.
 
-Im Gegensatz zum Original (Java-Desktop-App) läuft TasmotaView komplett im Browser und benötigt lediglich Node.js.
+Im Gegensatz zum Original (Java-Desktop-App) läuft TasmotaView komplett im Browser und benötigt lediglich Node.js. Optional kann TasmotaView auch als **Windows Desktop-App** (Electron) genutzt werden – ein Klick, kein Browser nötig.
 
 ## Features
 
@@ -137,7 +138,41 @@ npm run build
 npm start
 ```
 
-Für Produktion müsste das Frontend-Build (`frontend/dist/`) vom Express-Server als statische Dateien ausgeliefert werden (oder per Nginx/Apache).
+Im Produktionsmodus liefert der Express-Server das Frontend-Build (`frontend/dist/`) automatisch als statische Dateien aus.
+
+---
+
+## Desktop-App (Electron)
+
+TasmotaView kann als native Windows Desktop-App genutzt werden. Der Express-Server läuft direkt im Electron-Hauptprozess – kein separater Terminal/Browser nötig.
+
+### Entwicklungsmodus (Electron)
+
+```bash
+npm run electron:dev
+```
+
+Startet Backend, Frontend (Vite) und das Electron-Fenster parallel. Hot-Reload funktioniert wie gewohnt.
+
+### Desktop-App bauen (.exe)
+
+```bash
+# Windows Installer (.exe) + Portable Version
+npm run electron:build
+
+# Nur Portable Version
+npm run electron:build:portable
+```
+
+**Output:** `dist-electron/` – enthält:
+- `TasmotaView Setup X.X.X.exe` – Windows Installer (NSIS)
+- `TasmotaView-Portable-X.X.X.exe` – Portable Version (keine Installation nötig)
+
+### Hinweise zur Desktop-App
+
+- **Einstellungen** werden im Benutzerverzeichnis gespeichert (`%APPDATA%/TasmotaView/data/settings.json`) und bleiben bei App-Updates erhalten
+- **Externe Links** (z.B. Tasmota-Webinterfaces) öffnen sich im Standard-Browser
+- Die App muss auf einem PC laufen, der sich **im selben Netzwerk** wie die Tasmota-Geräte befindet
 
 ---
 
@@ -145,7 +180,12 @@ Für Produktion müsste das Frontend-Build (`frontend/dist/`) vom Express-Server
 
 ```
 TasmotaView/
-├── package.json                 # Root – startet Backend + Frontend parallel
+├── package.json                 # Root – Scripts, Electron-Builder Konfiguration
+├── electron/
+│   └── main.js                  # Electron Hauptprozess
+├── build/
+│   ├── icon.png                 # App-Icon (256×256)
+│   └── icon.svg                 # App-Icon (Quelle)
 │
 ├── backend/
 │   ├── package.json             # Backend-Abhängigkeiten
@@ -414,6 +454,8 @@ node --version
 | **Routing** | React Router | 7.x |
 | **Backend** | Node.js + Express | 18+ / 4.x |
 | **HTTP-Kommunikation** | Native `fetch()` (Node 18+) | — |
+| **Desktop-App** | Electron | 41.x |
+| **Build (Desktop)** | electron-builder | 26.x |
 
 ---
 
@@ -437,3 +479,6 @@ Dieses Projekt ist inspiriert von [TasmoView](https://github.com/andreaskielkopf
 | [Express](https://github.com/expressjs/express) | MIT | HTTP-Server (Backend) |
 | [cors](https://github.com/expressjs/cors) | MIT | CORS-Middleware (Backend) |
 | [concurrently](https://github.com/open-cli-tools/concurrently) | MIT | Paralleles Starten von Prozessen (Root) |
+| [Electron](https://github.com/electron/electron) | MIT | Desktop-App Framework (Root) |
+| [electron-builder](https://github.com/electron-userland/electron-builder) | MIT | Build & Packaging der Desktop-App (Root) |
+| [wait-on](https://github.com/jeffbski/wait-on) | MIT | Wartet auf Server-Start vor Electron-Launch (Root) |

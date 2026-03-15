@@ -33,3 +33,6 @@ frontend/.vite/
 
 # Runtime data
 backend/data/settings.json
+
+# Electron build output
+dist-electron/

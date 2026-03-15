@@ -1,14 +1,24 @@
 import express from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
 import { scanNetwork } from './scanner.js';
 import { loadSettings, saveSettings } from './settings.js';
 import { sendCommand, getDeviceStatus, configureMqtt } from './tasmota.js';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// ─── Serve static frontend files (production / Electron) ───────
+const staticDir = process.env.TASMOTAVIEW_STATIC_DIR || join(__dirname, '..', '..', 'frontend', 'dist');
+if (existsSync(staticDir)) {
+  app.use(express.static(staticDir));
+}
 
 // ─── Scan Network ──────────────────────────────────────────────
 app.get('/api/scan', async (req, res) => {
@@ -79,6 +89,13 @@ app.put('/api/settings', (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+// ─── SPA Catch-All (must be AFTER api routes) ─────────────────
+if (existsSync(staticDir)) {
+  app.get('*', (req, res) => {
+    res.sendFile(join(staticDir, 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`\n  🔍 TasmotaView Backend running on http://localhost:${PORT}\n`);
