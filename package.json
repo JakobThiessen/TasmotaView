@@ -20,9 +20,7 @@
       "output": "dist-electron"
     },
     "files": [
-      "electron/**/*",
-      "backend/src/**/*",
-      "backend/package.json"
+      "electron/**/*"
     ],
     "extraResources": [
       {
@@ -36,6 +34,14 @@
       {
         "from": "backend/src",
         "to": "backend/src"
+      },
+      {
+        "from": "backend/node_modules",
+        "to": "backend/node_modules"
+      },
+      {
+        "from": "backend/package.json",
+        "to": "backend/package.json"
       }
     ],
     "win": {

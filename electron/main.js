@@ -40,6 +40,11 @@ async function startBackend() {
   // Set env for static files path (production)
   if (!isDev) {
     process.env.TASMOTAVIEW_STATIC_DIR = join(process.resourcesPath, 'frontend-dist');
+    // Ensure backend can resolve its node_modules (express, cors, etc.)
+    const backendModules = join(process.resourcesPath, 'backend', 'node_modules');
+    process.env.NODE_PATH = backendModules;
+    // Re-initialize module paths for both CJS and ESM resolution
+    try { require('module').Module._initPaths(); } catch {}
   }
 
   // Import and start the backend server
